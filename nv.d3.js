@@ -724,11 +724,7 @@ window.nv.tooltip.* also has various helper methods.
 
     var bounds = nv.tooltip.calcTooltipPosition(pos, gravity, dist, container[0][0], containerWidth, containerHeight);
 
-    container.attr('transform', function(d,i){
-        d.x = bounds.x;
-        d.y = bounds.y;
-        return "translate(" + d.x + "," + d.y + ")";
-    });
+    container.attr('transform', "translate(" + bounds.x + "," + bounds.y + ")");
 
     text
         .attr("x", containerWidth/2)
