@@ -324,14 +324,14 @@ window.nv.tooltip.* also has various helper methods.
   // pos = [left,top]
   nv.tooltip.show = function(pos, content, gravity, dist, parentContainer, classes) {
     
-    var body = parentContainer.getElementsByTagName('svg')[0];
+    // var body = parentContainer.getElementsByTagName('svg')[0];
 
     if (parentContainer) {
         pos[0] = pos[0] - parentContainer.scrollLeft;
         pos[1] = pos[1] - parentContainer.scrollTop;
     }
 
-    var container = d3.select(body)
+    var container = d3.select(parentContainer).select('g')
         .append('g')
         .attr('class','tooltip-container');
 

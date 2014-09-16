@@ -51,7 +51,7 @@ nv.models.multiChart = function() {
         y = ((e.series.yAxis == 2) ? yAxis2 : yAxis1).tickFormat()(lines1.y()(e.point, e.pointIndex)),
         content = tooltip(e.series.key, x, y, e, chart);
 
-    nv.tooltip.show([left, top], content, undefined, undefined, offsetElement.offsetParent);
+    nv.tooltip.show([left, top], content, undefined, undefined, offsetElement);
   };
 
   function chart(selection) {
