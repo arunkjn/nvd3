@@ -700,14 +700,14 @@ window.nv.tooltip.* also has various helper methods.
   // pos = [left,top]
   nv.tooltip.show = function(pos, content, gravity, dist, parentContainer, classes) {
     
-    var body = parentContainer.getElementsByTagName('svg')[0];
+    // var body = parentContainer.getElementsByTagName('svg')[0];
 
     if (parentContainer) {
         pos[0] = pos[0] - parentContainer.scrollLeft;
         pos[1] = pos[1] - parentContainer.scrollTop;
     }
 
-    var container = d3.select(body)
+    var container = d3.select(parentContainer).select('g')
         .append('g')
         .attr('class','tooltip-container');
 
@@ -9449,7 +9449,7 @@ nv.models.multiChart = function() {
         y = ((e.series.yAxis == 2) ? yAxis2 : yAxis1).tickFormat()(lines1.y()(e.point, e.pointIndex)),
         content = tooltip(e.series.key, x, y, e, chart);
 
-    nv.tooltip.show([left, top], content, undefined, undefined, offsetElement.offsetParent);
+    nv.tooltip.show([left, top], content, undefined, undefined, offsetElement);
   };
 
   function chart(selection) {
