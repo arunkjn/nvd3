@@ -9290,8 +9290,10 @@ nv.models.multiBarHorizontalChart = function() {
   chart.dispatch = dispatch;
   chart.multibar = multibar;
   chart.legend = legend;
-  chart.xAxis = xAxis;
-  chart.yAxis = yAxis;
+  
+  // inverting the axes to keep the frontend options consistent
+  chart.xAxis = yAxis;
+  chart.yAxis = xAxis;
 
   d3.rebind(chart, multibar, 'x', 'y', 'xDomain', 'yDomain', 'xRange', 'yRange', 'forceX', 'forceY',
     'clipEdge', 'id', 'delay', 'showValues','showBarLabels', 'valueFormat', 'stacked', 'barColor');
