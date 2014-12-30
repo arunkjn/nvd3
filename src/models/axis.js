@@ -61,7 +61,7 @@ nv.models.axis = function() {
       else if (reduceXTicks && (axis.orient() == 'top' || axis.orient() == 'bottom'))
         axis.ticks(Math.abs(scale.range()[1] - scale.range()[0]) / 100);
       else if((axis.orient() == 'top' || axis.orient() == 'bottom'))
-        axis.ticks((data[0] && data[0].values && data[0].values.length -1) || 10);
+        axis.ticks((data[0] && data[0].values && data[0].values.length) || 10);
 
       //TODO: consider calculating width/height based on whether or not label is added, for reference in charts using this component
 
@@ -125,6 +125,7 @@ nv.models.axis = function() {
             //Rotate all xTicks
             xTicks
               .attr('transform', function(d,i,j) { return 'rotate(' + rotateLabels + ' 0,0)' })
+              .attr('dy', rotateLabels%180 == 0 ? '.71em' : '')
               .style('text-anchor', rotateLabels%360 > 0 ? 'start' : 'end');
           }
           axisLabel.enter().append('text').attr('class', 'nv-axislabel');
@@ -145,7 +146,7 @@ nv.models.axis = function() {
                   return 'translate(' + (scale(d) + (isOrdinal ? scale.rangeBand() / 2 : 0)) + ',0)'
                 })
               .select('text')
-                .attr('dy', '.71em')
+                .attr('dy', rotateLabels%180 == 0 ? '.71em' : '')
                 .attr('y', axis.tickPadding())
                 .attr('transform', function(d,i,j) { return 'rotate(' + rotateLabels + ' 0,0)' })
                 .style('text-anchor', rotateLabels ? (rotateLabels%360 > 0 ? 'start' : 'end') : 'middle')
