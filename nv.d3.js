@@ -1011,6 +1011,7 @@ nv.utils.optionsFunc = function(args) {
     , rotateLabels = 0
     , rotateYLabel = true
     , staggerLabels = false
+    , reduceXTicks = true
     , isOrdinal = false
     , ticks = null
     , axisLabelDistance = 12 //The larger this number is, the closer the axis label is to the axis.
@@ -1049,12 +1050,13 @@ nv.utils.optionsFunc = function(args) {
 
       //------------------------------------------------------------
 
-
+      if(axis.orient() == 'bottom') debugger;
       if (ticks !== null)
         axis.ticks(ticks);
-      else if (axis.orient() == 'top' || axis.orient() == 'bottom')
+      else if (reduceXTicks && (axis.orient() == 'top' || axis.orient() == 'bottom'))
         axis.ticks(Math.abs(scale.range()[1] - scale.range()[0]) / 100);
-
+      else if((axis.orient() == 'top' || axis.orient() == 'bottom'))
+        axis.ticks((data[0] && data[0].values && data[0].values.length -1) || 10);
 
       //TODO: consider calculating width/height based on whether or not label is added, for reference in charts using this component
 
@@ -1383,6 +1385,12 @@ nv.utils.optionsFunc = function(args) {
   chart.staggerLabels = function(_) {
     if (!arguments.length) return staggerLabels;
     staggerLabels = _;
+    return chart;
+  };
+
+  chart.reduceXTicks = function(_) {
+    if (!arguments.length) return reduceXTicks;
+    reduceXTicks = _;
     return chart;
   };
 
@@ -9409,6 +9417,7 @@ nv.models.multiChart = function() {
       height = null,
       showLegend = true,
       tooltips = true,
+      reduceXTicks = true, // if false a tick will show for every data point
       tooltip = function(key, x, y, e, graph) {
         return '<h3>' + key + '</h3>' +
                '<p>' +  y + ' at ' + x + '</p>'
@@ -9620,10 +9629,9 @@ nv.models.multiChart = function() {
       if(dataLines2.length){d3.transition(lines2Wrap).call(lines2);}
       
 
-
       xAxis
-        .ticks( availableWidth / 100 )
-        .tickSize(-availableHeight, 0);
+        .tickSize(-availableHeight, 0)
+        .reduceXTicks(reduceXTicks);
 
       g.select('.x.axis')
           .attr('transform', 'translate(0,' + availableHeight + ')');
@@ -9800,6 +9808,12 @@ nv.models.multiChart = function() {
   chart.yDomain2 = function(_) {
     if (!arguments.length) return yDomain2;
     yDomain2 = _;
+    return chart;
+  };
+
+  chart.reduceXTicks= function(_) {
+    if (!arguments.length) return reduceXTicks;
+    reduceXTicks = _;
     return chart;
   };
 

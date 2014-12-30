@@ -17,6 +17,7 @@ nv.models.axis = function() {
     , rotateLabels = 0
     , rotateYLabel = true
     , staggerLabels = false
+    , reduceXTicks = true
     , isOrdinal = false
     , ticks = null
     , axisLabelDistance = 12 //The larger this number is, the closer the axis label is to the axis.
@@ -55,12 +56,13 @@ nv.models.axis = function() {
 
       //------------------------------------------------------------
 
-
+      if(axis.orient() == 'bottom') debugger;
       if (ticks !== null)
         axis.ticks(ticks);
-      else if (axis.orient() == 'top' || axis.orient() == 'bottom')
+      else if (reduceXTicks && (axis.orient() == 'top' || axis.orient() == 'bottom'))
         axis.ticks(Math.abs(scale.range()[1] - scale.range()[0]) / 100);
-
+      else if((axis.orient() == 'top' || axis.orient() == 'bottom'))
+        axis.ticks((data[0] && data[0].values && data[0].values.length -1) || 10);
 
       //TODO: consider calculating width/height based on whether or not label is added, for reference in charts using this component
 
@@ -389,6 +391,12 @@ nv.models.axis = function() {
   chart.staggerLabels = function(_) {
     if (!arguments.length) return staggerLabels;
     staggerLabels = _;
+    return chart;
+  };
+
+  chart.reduceXTicks = function(_) {
+    if (!arguments.length) return reduceXTicks;
+    reduceXTicks = _;
     return chart;
   };
 
