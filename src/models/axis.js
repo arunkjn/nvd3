@@ -56,7 +56,6 @@ nv.models.axis = function() {
 
       //------------------------------------------------------------
 
-      if(axis.orient() == 'bottom') debugger;
       if (ticks !== null)
         axis.ticks(ticks);
       else if (reduceXTicks && (axis.orient() == 'top' || axis.orient() == 'bottom'))
