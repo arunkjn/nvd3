@@ -1206,7 +1206,7 @@ nv.utils.optionsFunc = function(args) {
               .style('text-anchor', rotateYLabel ? 'middle' : 'end')
               .attr('transform', rotateYLabel ? 'rotate(-90)' : '')
               .attr('y', rotateYLabel ? (-Math.max(margin.left,width) + axisLabelDistance) : -10) //TODO: consider calculating this based on largest tick width... OR at least expose this on chart
-              .attr('x', rotateYLabel ? (-scale.range()[0] / 2) : -axis.tickPadding());
+              .attr('x', rotateYLabel ? (scale.range().length > 2) ? (-scale.range()[scale.range().length-1] / 2): (-scale.range()[0] / 2) : -axis.tickPadding()); //if the scale is ordinal take the last value. for linear take first value
           if (showMaxMin) {
             var axisMaxMin = wrap.selectAll('g.nv-axisMaxMin')
                            .data(scale.domain());
