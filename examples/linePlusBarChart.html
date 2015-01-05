@@ -98,7 +98,7 @@ nv.addGraph(function() {
     chart.y2Axis
         .tickFormat(function(d) { return '$' + d3.format(',.2f')(d) });
 
-    chart.bars.forceY([0]).padData(false);
+    // chart.bars.forceY([0]).padData(false);
     //chart.lines.forceY([0]);
 
     d3.select('#chart1 svg')

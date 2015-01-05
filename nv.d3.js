@@ -9439,8 +9439,8 @@ nv.models.multiChart = function() {
       lines1 = nv.models.line().yScale(yScale1),
       lines2 = nv.models.line().yScale(yScale2),
 
-      bars1 = nv.models.multiBar().stacked(false).yScale(yScale1),
-      bars2 = nv.models.multiBar().stacked(false).yScale(yScale2),
+      bars1 = nv.models.historicalBar().yScale(yScale1),
+      bars2 = nv.models.historicalBar().yScale(yScale2),
 
       stack1 = nv.models.stackedArea().yScale(yScale1),
       stack2 = nv.models.stackedArea().yScale(yScale2),
@@ -9452,6 +9452,27 @@ nv.models.multiChart = function() {
       legend = nv.models.legend().height(30),
       dispatch = d3.dispatch('tooltipShow', 'tooltipHide');
 
+  lines1
+    .clipEdge(false)
+    .padData(true)
+    ;
+  lines2
+    .clipEdge(false)
+    .padData(true)
+    ;
+  bars1
+    .padData(true)
+    ;
+  bars2
+    .padData(true)
+    ;
+
+  stack1
+    .padData(true)
+    ;
+  stack2
+    .padData(true)
+    ;
   var showTooltip = function(e, offsetElement) {
     var left = e.pos[0],
         top = e.pos[1],
@@ -9494,17 +9515,14 @@ nv.models.multiChart = function() {
               return d.values.map(function(d,i) {
                 return { x: d.x, y: d.y }
               })
-            })
-
-      x   .domain(d3.extent(d3.merge(series1.concat(series2)), function(d) { return d.x } ))
-          .range([0, availableWidth]);
+            });
 
       var wrap = container.selectAll('g.wrap.multiChart').data([data]);
       var gEnter = wrap.enter().append('g').attr('class', 'wrap nvd3 multiChart').append('g');
 
-      gEnter.append('g').attr('class', 'x axis');
-      gEnter.append('g').attr('class', 'y1 axis');
-      gEnter.append('g').attr('class', 'y2 axis');
+      gEnter.append('g').attr('class', 'nv-x nv-axis');
+      gEnter.append('g').attr('class', 'nv-y1 nv-axis');
+      gEnter.append('g').attr('class', 'nv-y2 nv-axis');
       gEnter.append('g').attr('class', 'lines1Wrap');
       gEnter.append('g').attr('class', 'lines2Wrap');
       gEnter.append('g').attr('class', 'bars1Wrap');
@@ -9604,7 +9622,7 @@ nv.models.multiChart = function() {
       var extraValue2 = dataStack2.length ? dataStack2.map(function(a){return a.values}).reduce(function(a,b){
         return a.map(function(aVal,i){return {x: aVal.x, y: aVal.y + b[i].y}})
       }).concat([{x:0, y:0}]) : []
-
+      
       yScale1 .domain(yDomain1 || d3.extent(d3.merge(series1).concat(extraValue1), function(d) { return d.y } ))
               .range([0, availableHeight])
 
@@ -9627,15 +9645,35 @@ nv.models.multiChart = function() {
 
       if(dataLines1.length){d3.transition(lines1Wrap).call(lines1);}
       if(dataLines2.length){d3.transition(lines2Wrap).call(lines2);}
-      
+
+      var notDefaultRange = function(series){
+        return series.xScale().range() && series.xScale().range().length > 1 && series.xScale().range()[1] > 1 && series.xScale().range() != availableWidth;
+      }
+      var getXRange = function(){
+        if(notDefaultRange(bars1))
+          return bars1.xScale().range();
+        if(notDefaultRange(bars2))
+          return bars2.xScale().range();
+        if(notDefaultRange(lines1))
+          return lines1.xScale().range();
+        if(notDefaultRange(lines2))
+          return lines2.xScale().range();
+        if(notDefaultRange(stack1))
+          return stack1.xScale().range();
+        if(notDefaultRange(stack2))
+          return stack2.xScale().range();
+        return [0,availableWidth];
+      }
+      x.domain(d3.extent(d3.merge(series1.concat(series2)), function(d) { return d.x } ))
+          .range(getXRange());
 
       xAxis
         .tickSize(-availableHeight, 0)
         .reduceXTicks(reduceXTicks);
 
-      g.select('.x.axis')
+      g.select('.nv-x.nv-axis')
           .attr('transform', 'translate(0,' + availableHeight + ')');
-      d3.transition(g.select('.x.axis'))
+      d3.transition(g.select('.nv-x.nv-axis'))
           .call(xAxis);
 
       yAxis1
@@ -9643,19 +9681,19 @@ nv.models.multiChart = function() {
         .tickSize( -availableWidth, 0);
 
 
-      d3.transition(g.select('.y1.axis'))
+      d3.transition(g.select('.nv-y1.nv-axis'))
           .call(yAxis1);
 
       yAxis2
         .ticks( availableHeight / 36 )
         .tickSize( -availableWidth, 0);
 
-      d3.transition(g.select('.y2.axis'))
+      d3.transition(g.select('.nv-y2.nv-axis'))
           .call(yAxis2);
 
-      g.select('.y2.axis')
+      g.select('.nv-y2.nv-axis')
           .style('opacity', series2.length ? 1 : 0)
-          .attr('transform', 'translate(' + x.range()[1] + ',0)');
+          .attr('transform', 'translate(' + availableWidth + ',0)');
 
       legend.dispatch.on('stateChange', function(newState) { 
         chart.update();
@@ -13633,7 +13671,7 @@ nv.models.stackedArea = function() {
   chart.dispatch = dispatch;
   chart.scatter = scatter;
 
-  d3.rebind(chart, scatter, 'interactive', 'size', 'xScale', 'yScale', 'zScale', 'xDomain', 'yDomain', 'xRange', 'yRange',
+  d3.rebind(chart, scatter, 'interactive', 'size', 'xScale', 'yScale', 'zScale', 'xDomain', 'yDomain', 'xRange', 'yRange', 'padData',
     'sizeDomain', 'forceX', 'forceY', 'forceSize', 'clipVoronoi', 'useVoronoi','clipRadius','highlightPoint','clearHighlights');
 
   chart.options = nv.utils.optionsFunc.bind(chart);
