@@ -1119,7 +1119,7 @@ nv.utils.optionsFunc = function(args) {
             //Rotate all xTicks
             xTicks
               .attr('transform', function(d,i,j) { return 'rotate(' + rotateLabels + ' 0,0)' })
-              .attr('dy', rotateLabels%180 == 0 ? '.71em' : '')
+              .attr('dy', rotateLabels%180 == 0 ? '.71em' : '.71em')
               .style('text-anchor', rotateLabels%360 > 0 ? 'start' : 'end');
           }
           axisLabel.enter().append('text').attr('class', 'nv-axislabel');
