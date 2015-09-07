@@ -335,7 +335,7 @@ window.nv.tooltip.* also has various helper methods.
         .append('g')
         .attr('class','tooltip-container');
 
-    var containerHeight = 25;
+    var containerHeight = 27;
     var containerWidth;
 
     var text = container.append("text")
@@ -357,13 +357,17 @@ window.nv.tooltip.* also has various helper methods.
     text
         .attr("x", containerWidth/2)
         .attr("y", containerHeight/2)
-        .attr("dy", ".35em");
+        .attr("dy", ".35em")
+        .style("font-family", "latoregular")
+        .style("font-size", "12px")
+        .style("fill", "#4c4c4b");
 
     container.insert('rect', ":first-child")
         .attr("width",containerWidth)
         .attr("height", containerHeight)
-        .attr("fill","white")
-        .attr("stroke", "black");
+        .attr("rx","3")
+        .attr("ry", "3")
+        .style("fill", "#D0D0D0");
   };
 
   //Looks up the ancestry of a DOM element, and returns the first NON-svg node.
