@@ -9473,10 +9473,13 @@ nv.models.multiChart = function() {
 
   stack1
     .padData(true)
+    .clipEdge(true)
     ;
   stack2
     .padData(true)
+    .clipEdge(true)
     ;
+
   var showTooltip = function(e, offsetElement) {
     var left = e.pos[0],
         top = e.pos[1],
